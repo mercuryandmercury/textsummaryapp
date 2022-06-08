@@ -65,8 +65,6 @@ def text_cleaner(paper):
 clean_text = text_cleaner(rs_content)
 print(clean_text)
 
-st.subheader('after cleaning it looks like this')
-st.write(clean_text)
 
 sentences  = [x for x in clean_text.split('. ') if x not  in ['',' ','..','.','...']]
 len(sentences)
