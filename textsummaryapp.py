@@ -14,6 +14,7 @@ from sumy.summarizers.text_rank import TextRankSummarizer
 from sumy.nlp.tokenizers import Tokenizer
 import networkx as nx
 import streamlit as st
+nltk.download('stopwords')
 research = open('Development content.txt','r')
 rs_content = research.read()
 print(rs_content)
