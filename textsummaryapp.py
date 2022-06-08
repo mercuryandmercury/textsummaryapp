@@ -16,6 +16,8 @@ import networkx as nx
 import streamlit as st
 import nltk
 nltk.download('stopwords')
+nltk.download('punkt')
+
 research = open('Development content.txt','r')
 rs_content = research.read()
 print(rs_content)
