@@ -1,0 +1,594 @@
+DESIGNING new single-crystal Ni-base superalloy
+is a challenge due to competitive requirements on the
+material properties and the complexity of the material
+composition with eight or more alloying elements.
+Additionally, modifying a single element concentration
+usually influences more than one alloy property and the
+identification of individual effects is difficult. State-ofthe-art alloy development comprises targeted adaption
+of existing alloy compositions for experimental testing.
+Consequently, alloy compositions of potentially improved material properties within the huge designspace spanned by all alloying elements are widely
+unexplored until today.
+Modern alloy development combines numerical optimization methods with experimental validation to guide
+the development towards promising compositions.
+Instead of a single alloy composition which satisfies all
+multiple optimization criteria in a multi-component
+design-space, there exist a number of alloy compositions
+representing the Pareto front. All compositions on the
+Pareto front are optimal in the sense that it is not
+possible to improve one criterion without worsening
+another. Numerical approaches now try to determine all
+possible Pareto front compositions in the design-space
+for certain multiple optimization criteria. The general
+ansatz is to collect as many experimental data on alloy
+systems as available and develop interpolation and
+extrapolation models for unknown compositions.
+The CALPHAD method (CALculation of PHAse
+Diagrams, today Computer Coupling of Phase Diagrams and Thermochemistry)[1] allows the prediction of
+many physical properties of complex multi-component
+alloys, e.g., phase fractions, phase compositions, or
+precipitate driving forces at any temperature by using
+Gibbs free energy databases. Until today, the improvement of the underlying databases is ongoing,
+especially in the field of superalloys.[2–4]
+Several studies applying various approaches have
+been published in the field of superalloys. One example
+is a combinatorial brute-force algorithm for scanning
+large design-spaces using model characteristics like creep
+resistance, microstructural stability, castability, density,
+and cost.[5]
+Lass applied computational thermodynamics
+to design a Co-Ni-base superalloy out of six elements
+avoiding the formation of secondary phases.[6] A mesh
+adaptive search algorithm in combination with a
+CALPHAD software is used to determine several design
+objectives, the optimum alloy compositions, and processing conditions. A further improvement for the
+optimization of processing conditions, is the integration
+of the c¢-precipitation kinetics[7] considering higher
+computational effort for the phase evolution prediction.
+Another approach is the combination of CALPHAD
+computations together with artificial neural networks,[8]
+whereby this approach is only valid within a small
+parameter variation to well-known alloy compositions.
+Global optimization techniques together with large
+experimental databases are applied for designing alloys
+with optimum composition.[9–11] Promising results are
+achieved by coupling genetic search algorithms with
+CALPHAD computations.[9,12,13] Li et al. proposed a
+computational framework combining genetic algorithms, CALPHAD computations, and mechanistic
+material models to optimize the alloy composition
+within the ternary system Ni-Al-Cr.[14] However, the
+coupling of a genetic algorithm to additional, computationally expensive models, prevent the optimization
+within a large n-dimensional design-space. Therefore,
+simplified surrogate models need to be defined,[15]
+which
+are easy to couple into a multi-criteria optimization
+problem.
+In this work, the numerical multi-criteria optimization tool MultOpt++ using a genetic search algorithm,
+CALPHAD calculations, and semi-empirical as well as
+surrogate models for alloy development is presented. Its
+successful application for the development of rhenium-free single-crystal Ni-base superalloys ERBO/
+13[16,17] and ERBO/15[18,19] is revisited. One important
+goal during the optimization process is the replacement
+of rhenium by other refractory elements like tungsten
+and molybdenum. The higher amount of refractory
+elements may cause phase instability and the evolution
+of detrimental, brittle topologically close-packed (TCP)
+phases.[20–22]
+Since the described optimization procedure
+does not apply for phase stability of Ni-base superalloys, we present a possible route to develop a surrogate
+model for integration into the optimization procedure.The numerical approach in our simulation-assisted
+alloy development is based on a multi-criteria, multi-start optimization model using sequential quadratic
+programming described earlier.[16] The semi-empirical
+equation model for the room-temperature density as
+well as the model for the temperature-depended misfit by Caron et al.,[23] and the model for solid solution
+strengthening index ISSS by Fleischmann et al.
+[24] are
+applied. Thermodynamic equilibrium material properties are provided by the CALPHAD method. These
+computations are only applied to a subset of possible
+compositions and the results are approximated by a
+Kriging surrogate model.[15,25]
+All alloying elements with their concentration range
+set up the design-space. The probability to find the
+global optimal composition is increased by choosing
+various starting points across the whole design-space.
+Within this space, optimum alloy compositions for
+certain optimization criteria are searched applying the
+surrogate and semi-empirical models. The accuracy of
+the surrogate models is improved by refining the
+approximation with the current set of optimal compositions before each restart.The first implementation of the optimization tool
+(termed MultOpt, Matlab-based[16]
+) uses a single-criterion optimization function, i.e., only one goal can be
+optimized at a time. However, the optimization of
+Ni-base superalloys demands multiple optimization
+goals, e.g., maximizing the solid solution strengthening
+index and minimizing the density. Accordingly, in this
+multi-criteria optimization, the solid solution strengthening index is optimized while sampling the density and
+holding constant during optimization. A final alloy
+composition is found by further post-processing the
+Pareto front, i.e., choosing the ideal composition to
+satisfy additional criteria. This program flow leads to a
+multi-start, multi-criteria optimization with limited
+computational effort. However, the method works less
+well, if more than two criteria are optimized, because
+each additional criterion increases the number of
+dimensions of the sampling domain. In addition, the
+Pareto front contains maximally as many compositions
+as the number of sampling points for the density.
+Therefore, an improved optimization routine which
+allows single-start, simultaneous multi-criteria optimization without limitations on the number of optimization
+criteria is presented in the present paper.The new plugin-based structure of the optimization
+tool MultOpt++ (C++-based) replaces every part of
+the previous alloy-by-design computational routine and
+is easily extendable by new features. All property
+models, surrogate modeling methods, execution modes,
+starting point selection algorithms, optimization library
+kernels, and other components are represented by a
+certain plugin. This allows to combine, for example,
+models based on different thermodynamic databases or
+even different CALPHAD applications. It is also possible to apply different optimization algorithms to
+improve calculation effort or result accuracy.
+A simplified schematic representation of the multi-criteria optimization tool for finding the Pareto front
+is shown in Figure 1.It mainly consists of four steps: The selection of
+appropriate starting points in the design-space, the
+pre-processing of all surrogate property models, the
+execution of the optimization engine, and the post-processing of the Pareto front if necessary.The alloy designer has the possibility to manually
+select starting points if available or use the latin
+hypercube sampling for an optimal selection of starting
+points. The improved latin hypercube sampling[26]
+provides a better distribution of starting points within
+n-dimensional design-spaces requiring higher computational effort.If surrogate property models are applied, they need to
+be initialized before the first run and improved in each
+iteration of the optimization routine. The starting points
+are used for the determination of the initial surrogate
+models, i.e., the property function is evaluated for all
+starting points and the interpolation is applied by the
+Kriging algorithm. In further iterations, the surrogate
+model is improved by minimizing the maximal predicted
+model error provided by the Kriging algorithm or the
+maximal expected improvement factor as proposed by
+Jones et al.
+[27] The Kriging approximation model is
+dynamically linked into MultOpt++ as external C-compiled Matlab DACE-toolbox library.[28]The insights of the MultOpt++ optimization engine
+are illustrated in Figure 1 (right). As demonstrated by
+many researches in a wide range of approaches,evolutionary algorithms are effective for solving multi-objective optimization problems.[29–32] Therefore, the
+first optimization step is performed by an evolutionary algorithm provided by the powerful optimization library
+Geneva ‘‘Ivrea - Via Arduino’’ 1.6.1*. Since evolutionary algorithms typically need many iterations, the last
+optimization is optionally performed by a deterministic
+search algorithm. This step requires the transformation
+of multi-criteria to a single-criterion optimization problem, in a similar way as in MultOpt. The Geneva library
+provides further probabilistic algorithms as simulated
+annealing, swarm intelligence, and deterministic algorithms like the gradient descents algorithm. The last one
+is applied to improve the Pareto front in the last
+optimization step. Optionally, this step can be combined
+with one of the other probabilistic search algorithms to
+benefit from the multi-point start with already Pareto
+optimal and not random-selected individuals which
+results in fewer steps with higher computational effort.
+In the case of optimization with direct usage of objective
+functions without surrogate models, the Pareto front is
+the direct result and post-processing as well as multiple
+optimization runs are skipped.If surrogate models were applied during the optimization run, a post-processing of the Pareto front is
+necessary. The properties of the predicted optimal
+compositions have to be recalculated by the direct
+calculation of the objective functions. For surrogate optimization goals, the Pareto selection and for surrogate constraint properties, the feasibility check has to be
+repeated, respectively. During post-processing, the current Pareto front may worsen and has to be merged with
+the Pareto front from the previous optimization run.
+The final optimal points are starting points for the next
+optimization run also resulting in an improvement of
+surrogate models within relevant concentration space. If
+the Pareto front converges, i.e., the optimal values of
+each single Pareto point cannot be improved within n
+consecutive optimization runs, the optimization is finished. The number of iterations n is adjustable with a
+default value of 20.The numerical optimization tool MultOpt was
+already successfully applied in previous studies.[16,18]
+Starting point was CMSX-4 which is a second-generation single-crystal Ni-base superalloy[33] that is successfully applied in, e.g., aircraft turbines.[34,35] By the
+addition of 3 wt pct rhenium, a high-temperature creep
+lifetime is reached due to an extremely low diffusion
+coefficient. However, the resulting disadvantage is the
+impossibility of a complete solutionizing and elimination of segregation. More importantly, rhenium is a rare
+material which is very expensive and prone to speculative manipulation. Therefore, we tried to develop a
+rhenium-free Ni-base superalloy with similar creep
+properties as CMSX-4. The numerical results of
+previous studies[16,18] are revisited with the modified
+tool MultOpt++ and presented here.
+The basic idea in our previous alloy development
+effort was as follows. Rhenium as a solid solution
+strengthener can be replaced by other refractory elements like tungsten and molybdenum. Refractory elements, however, are heavy, i.e., they increase the density. Tungsten and molybdenum are not as effective
+as rhenium and one needs higher amounts to account
+for this, i.e., the density will increase even more. We
+noticed that certain ‘‘control elements’’ like titanium
+and tantalum can be used to change the c/c0 partitioning
+behavior.[36–39] This means by addition of the control
+elements, the solid solution strengtheners can be pushed
+from the c0
+-precipitates, where they are less efficient, into
+the matrix, where they are wanted. With this strategy,
+alloys with the minimum amount of refractory metals
+are obtained.In a first development campaign,[16] we varied mostly
+tungsten and tantalum and obtained alloy ERBO/13[17]
+as a result. In our development, we tried to keep
+c0
+-volume fraction and lattice misfit at 1100 C as close
+to CMSX-4 as possible. We focused on the partitioning
+behavior of tungsten during the optimization. In
+CMSX-4, tungsten is only slightly enriched in the
+matrix phase. Therefore, we aimed on an increasing
+amount to compensate the rhenium effect on creep
+resistivity. The density, solid solution strengthening
+index, and lattice misfit of the optimum composition
+ERBO/13 and the reference CMSX-4 are shown in
+Figure 2. Calculations are performed using
+MultOpt++. The second isoline at  0.2 pct lattice
+misfit shows the Pareto front for the optimization
+constraints. The solid solution strengthening index of
+ERBO/13 (6.6 at. pct) is found at 8950 kg/m3. This
+demonstrates that the current set of strong restrictions
+prevents achieving the desired index of 7.7 at. pct for
+CMSX-4, because densities above 9000 kg/m3 are not
+desired. In a second, more successful campaign,[18] we varied
+molybdenum and titanium and obtained ERBO/15.[19]
+For ERBO/15, the lattice misfit constraint was somewhat relaxed. Since the main disadvantage of ERBO/13
+is the very high density, the strong constraints on the
+lattice misfit and the c0
+-phase fraction are opened to the
+ranges of  0.5 to  0.1 pct and 43 to 47 mol pct,respectively. The optimization goals are a minimum
+density, similar creep resistivity to CMSX-4, and a
+rhenium-free alloy composition. The resulting color
+code of the lattice misfit and the optimal composition
+ERBO/15 are also shown in Figure 2. The highest solid
+solution strengthening index can be found for the
+minimum lattice misfit of  0.5 pct. By choosing the
+index of CMSX-4, the optimal composition ERBO/15
+with a minimum density of 8300 kg/m3 is found.In order to verify our predictions, ERBO/13 as well as
+ERBO/15 were prepared in the form of small buttons by
+arc melting and subsequently analyzed regarding physical properties and creep performance.[16,18] Despite
+weaknesses in the thermodynamic databases, the multi-criteria optimized alloy compositions agree well with
+most design constraints. This holds true for semi-empirical models (e.g., density or price) as well as thermodynamic properties (e.g., c0
+-phase fraction or lattice
+misfit). Exemplary, the largest mismatch is found for the
+solid solution strengthening index of ERBO/13, where
+the experimental determined value is roughly 8 pct lower
+than the numerical prediction.Due to a reduced solid solution strengthening index
+for ERBO/13, its creep resistance is slightly lower than
+for CMSX-4. Although ERBO/15 also contains no
+rhenium, the creep strength is comparable to that of
+CMSX-4 at low stresses.[18]
+Therefore, its specific creep
+strength is even higher due to a significantly reduced
+density. However, in the high-stress, low-temperature
+regime CMSX-4 seems superior to both ERBO compositions, which indicates a lower relevance of the solid
+solution strengthening in contrast to c0
+-strengthening.
+As an approximation regarding TCP-susceptibility, we
+used equilibrium calculation with Thermo-Calc engine
+and database TTNI8 for both alloys.[40] The phase
+amounts and solvus temperatures of the overall TCP
+content were compared to CMSX-4 for both alloys.
+ERBO/13 shows the lowest solvus temperature and
+TCP-phase amount among these three alloys. ERBO/
+15, however, shows also a much lower solvus temperature
+but a higher TCP-phase content at 950 C and below.The optimization tool MultOpt++ was successfully
+applied to revisit the alloy development of ERBO/13
+and ERBO/15 (see Section III). The improved execution
+and software structure simplified the optimization procedure, since multiple criteria can be optimized at once.
+The necessity of dividing additional optimization goals
+into several single-criteria optimization steps is omitted.
+Additionally, the plugin-based structure allows easily
+adopting the routine to new optimization problems and
+novel property models as well as optimization algorithms. The result of the calculation, i.e., the suggested
+optimal composition to be tried out in experiment, could
+be recomputed with minimal variations, e.g., in the
+cobalt and tungsten contents for ERBO/15 (see
+Figure 2). Further development of the MultOpt++ tool will focus on important aspects regarding superalloys that are currently neglected (processability or phase
+stability) or only indirectly accounted for (creep resistance) by the optimization tool. Therefore, we focus
+within this section on an approach to introduce a
+surrogate model for phase stability.
+Since decades, it is a challenging task to predict the
+phase instability of Ni-base superalloys causing the
+formation of TCP-phases. This is due to the fact that the
+TCP-phase precipitation is a complex time-temperature-depending process of nucleation and growth and
+during this process different TCP-phases as well as
+precipitation sequences appear.[21,41,42]
+The development
+of phase prediction started with Phase Computation
+(PHACOMP), based on the electron configuration of
+the alloying elements.[43]
+An improvement to this model
+is new PHACOMP,[44] which is applied in combination
+with CALPHAD computations until today.[5]
+Because it
+suffers from poor and sometimes incorrect predictions, a
+2D structure map representation of TCP-phase occurrences is suggested.[45] In addition to the influence of
+electronic effects,[46]
+a composition-dependent size factor
+is introduced to span up the 2D map. These maps are
+applicable to experimentally observed TCP-phase precipitates in superalloys[47,48] and well suited to validate
+TCP-phase predictions by combined CALPHAD and
+phase-field simulations.
+Numerical TCP-phase predictions require reliable
+material databases, a careful simulation setup utilizing
+thermodynamic computations applying these databases
+and a final validation, e.g., by structure maps. In the
+following sections, we describe a crossdisciplinary
+approach for material database improvements followed
+by a TCP-phase prediction simulation chain. Finally, we
+present an idea how to introduce a surrogate model for
+the TCP-phase prediction applicable in the numerical
+optimization procedure.More knowledge on TCP-phase formation in binary
+and ternary systems is necessary to extrapolate correctly
+to higher order systems. Current research connects
+combinatorial thin-film experimentation and bulk
+experimentation with ab-initio simulations to predict
+TCP-phases in ternary systems.[4] These results are used
+to improve existing material databases and thereby
+improve the predictions on the full alloy composition.
+In the following, the concept of Crossdisciplinary
+Material Database Improvement (CMDI) is explained
+by a general workflow schematic in Figure 3. Starting
+point is an external input from existing databases or
+calculations (dotted arrows). This input can for
+instance be an interesting, yet unknown or not wellknown ternary system or composition range in which
+TCP-phases are expected. Based on this initial input, a
+thin-film material library of the interesting composition
+rage will be fabricated on a 100mm diameter substrate
+by magnetron sputtering using a wedge-type multi-layer approach.[49,50]
+The material library is annealed
+and analyzed by energy dispersive X-ray spectroscopy (EDX), electric resistance measurements, and X-ray
+diffraction (XRD). The results of the combinatorial
+thin-film experimentation are direct inputs for the bulk
+experimentation and arising questions are addressed by
+ab-initio density-functional theory (DFT) calculations.
+Compositions found to be of interest in the material
+library are systematized in bulk by arc melting[51,52]
+and
+analyzed by scanning electron microscope (SEM),
+EDX, transmission electron microscope (TEM), and
+nanoindentation as well. Structural stability and formation energy for the phases found in the material
+library are analyzed by DFT calculations.[53] DFT
+calculations and bulk experimentation also exchange
+their results for further refinement. The combination of
+all three disciplines (combining combinatorial thin-film
+experimentation, bulk experimentation, and DFT calculations) enables a better understanding of each of the
+results on its own but also contribute as experimental/calculated data input to the material database. The
+updated material database can be used to predict phase
+diagrams by CALPHAD.[54] The CALPHAD results
+are crosschecked with the existing experimental data in
+the library enabling a feedback loop to further refine
+the CALPHAD predictions (dashed arrows). Figure 4
+shows a summary of results from a recent study on the
+Co-Ti-W system that applied the concept of CMDI.[4]
+In Figure 4(a), an isothermal section of a ternary phase
+diagram for the Co-Ti-W system predicted by CALPHAD based on the existing database TCNi8 is shown.
+Since experimental results as well as DFT calculations
+indicate the presence of titanium in the l-phase, a
+solubility of titanium is modeled by a preliminary
+modification of the thermodynamic database.
+Figure 4(b) represents an isothermal section of a
+ternary phase diagram for the Co-Ti-W system predicted by CALPHAD based on the improved TCNi8
+database. Due to the stabilizing effect of titanium that
+was taken into account in the second simulation, the
+single-phase region of the l-phase was enlarged into the
+ternary (up to approx. 8 at. pct titanium) also the
+existence range of the l-phase in the ternary Co-Ti-W
+system was enlarged. By this, also the expected volume
+fraction of the l-phase in the multi-phase regions
+increased. These results demonstrate the suitability of
+the CMDI approach to advantageously modify material databases.Second and higher generation Ni-base superalloys are
+highly alloyed with refractory elements like tungsten,
+molybdenum, rhenium, and ruthenium, respectively, to
+obtain excellent solid solution strengthening and creep
+properties.[16,18,37,55,56] They solidify in a dendritic
+microstructure causing microsegregation of alloying
+elements, low melting eutectic phases, and unfavorably
+shaped c0
+-precipitates.[57–59] An initial solution heat
+treatment is normally applied to remove microsegregations and eutectic phases and to dissolve the c0
+-precipitates followed by further heat treatment steps to ensure
+well-defined cubic c0
+-precipitates.[60,61] A full homogenization heat treatment of these elements in reasonable
+times is prevented due to a low diffusivity in combination with a preferred segregation into the dendrite cores
+during solidification.[60,62,63] The remaining segregation
+of refractory elements in the dendrite cores after heat
+treatment causes the formation of intermetallic phases
+(TCP) under service conditions.[64] In Ni-base superalloys, several brittle TCP-phases like r-, l-, P-, and
+R-phases were found,[20–22] which additionally deplete
+the solid solution strengtheners from the c-matrix.[65]
+Experimental investigations showed that nucleation
+occurs mainly on grain boundaries or on a previously
+formed metastable r-phase within the c-region.[42,65]
+The
+morphologies are various, e.g., plate-like, lath-type, or
+globular[22,66] with a preferred directional growth and
+coherency with {111}c or {100}c planes.[20–22] The
+embrittlement under load due to TCP-phases in combination with a surrounding matrix of depleted alloying
+elements results in degraded mechanical as well as
+chemical properties.[37,42]
+In order to minimize TCP-phase formation in newly
+developed Ni-base superalloys, the numerical optimization tool needs to be extended by a TCP-phase prediction model. Since the evolution of TCP-phases is
+influenced by manufacturing and service conditions, a
+comprehensive numerical simulation is necessary, which
+is illustrated in Figure 5. The casting parameters are
+used to predict the primary dendritic arm spacing
+(PDAS). All further simulation steps make use of
+thermodynamic material databases according to the
+superalloy base material. Here, the improved material
+databases by the CMDI approach described in Section IV–A are necessary to ensure a more reliable prediction of the whole simulation chain. The solidification simulation is a phase-field simulation which is
+initialized with the primary dendrite arm spacing and
+the alloy composition.[67] The result is a segregation
+profile which is the input for an optimization tool to
+predict the best heat treatment parameters to maximize
+homogeneity.[68] The resuming segregation profile after
+heat treatment is finally applied for phase-field simulations to predict microstructural evolution of c/c0 considering the influence of multi-component diffusion on
+nucleation and growth of TCP-phases. Once the whole
+simulation chain is established and validated, it is possible to extract information regarding designing,
+processing, and material properties of the studied alloy
+composition. Here, we only focus on the last result of
+the TCP-phase evolution, which is finally converted into
+a surrogate model for the application in the optimization tool MultOpt++. The casting parameters are determined by our new
+investment casting process named Fluidized Carbon Bed
+Cooling (FCBC).[69] Compared to the well-known
+liquid-metal cooling (LMC) process,[70–72]
+FCBC applies an inert gas fluidized bed of glassy carbon beads instead
+of a bath of molten tin to carry a buoyant layer of freely
+movable insulation particles.[73] The so-called Dynamic
+Baffle[74] properly separates the heating and solidification zones as it perfectly adapts the contour of the
+solidifying component at any time during withdrawal.
+The low-density Dynamic Baffle material is, similar to
+the bed material, based on carbon. The Dynamic Baffle
+is crucial to improve the temperature gradient in
+investment casting. Dynamic Baffle, carbon’s superalloy
+material compatibility and innovative process control
+over previous fluidized bed attempts are key features in
+the robust FCBC approach.[69]
+Because the FCBC process achieves higher temperature gradients, increased withdrawal rates in comparison
+to conventional investment casting devices are possible.
+The resulting PDAS is predicted by the empirical model
+k ¼ K  G0:5  v0:25;
+[75] where K is a constant (1444
+for Ni-base superalloys[76]
+), G is the temperature gradient, and v is the solidification velocity. In the case of
+directional solidification casting, the solidification velocity is approximated by the withdrawal rate. The temperature gradient G for a certain FCBC process setup
+can either be determined by numerical simulation[77] or
+by one sample experiment including the measurement of
+the PDAS.[69] The lowest PDAS around 300 lm for a
+single-crystal microstructure is achieved for a withdrawal rate of 5.0mm/min. This reduction to the
+industrial state of the art (larger 400 lm for the
+geometry studied) significantly reduces element segregation and heat treatment durations.The objective of the next step in the simulation chain
+is to understand the formation of the as-cast microstructure which represents a starting point for subsequent
+heat treatment simulations. The numerical approach
+relies solely on the input of the casting parameters, the
+nominal alloy composition, and the estimated PDAS.
+The final output are concentration maps of all alloying
+elements.
+As modeling approach, the multi-component multi-phase-field model[80,81] is applied. The free energy
+formulation of the system serves as basis considering
+contributions of the interfacial, chemical, and elastic
+energy. Following several mathematical operations[82]
+and the use of the double-obstacle potential, the
+phase-field equation can be formulated in antisymmetric
+approximation where Mab represents the interface mobility, rab the
+interface energy, g the interface width, and Dgab the
+Gibbs free energy difference between the phases a and b.
+Basically, /a is an indicator function used for tracking
+the moving interface during the process of solidification with values between 0 (solid bulk) and 1 (liquid melt).
+The contribution of the Gibbs free energy is evaluated
+by coupling to the software package Thermo-Calc. As a
+result, an optimal thermodynamic description of the
+solute partitioning in the system during the solidification
+process is ensured. Diffusion is solved with respect to all
+elements of the alloy composition. The amount of
+phases is limited to liquid, c and primary c0
+.
+The presented numerical approach for solidification
+during casting is validated by experimental results of
+directionally solidified CMSX-4 applying the vertical
+Bridgman process.[83] As software tool, the commercial
+software MICRESS in combination with the databases
+TCNI8 and MOBNI4 is used. The thermal gradient is
+taken from previous work,[83] where this value has been
+determined by a combined numerical and experimental
+approach. In the model, the same withdrawal rates are
+considered as in the case of solidification experiments.
+The PDAS is taken as input for the simulations.
+In Figure 6, the concentration distributions for
+rhenium and aluminum gained by simulations (a, b)
+and experiments (c,d) are presented, respectively.The
+experimental concentration maps were determined by
+electron microprobe analysis (EMPA).[84] For both
+elements, a good agreement between the simulated and
+the experimentally gained concentration distributions
+can be observed, e.g., the rhenium concentration in the
+center of the dendrite is 4.5 wt pct (a) and 4.9 wt pct (b),
+respectively. We note that the experimentally determined composition of c¢ in the interdendritic regions lies
+significantly below the theoretical equilibrium composition, which is probably due to the size of the electron
+beam which averages c and c¢ regions.The goal during solution heat treatment is to achieve
+the highest diffusion coefficients by a maximum temperature profile while avoiding incipient melting in order
+to prevent diminishing the mechanical properties.[85–87]
+The time-consuming experimental approach to define
+the solution heat treatment by measuring incipient
+melting temperatures for different heating rates by
+differential scanning calorimetry[88] is circumvented by
+a numerical heat treatment optimization procedure.[68]
+The computed heat treatment needs an experimental
+validation, because incipient melting temperature estimation errors in the range of  20 K depending on the
+alloy composition may occur due to inaccuracies in the
+material databases.The original optimization procedure consists of three
+steps: pre-processing of experimentally measured the
+as-cast concentration fields into a numerical representation, optimization of solution heat treatment, and the
+prediction of a corresponding process window. The
+pre-processing step is mainly redundant once the procedure is integrated in our simulation chain since
+numerically predicted concentration fields are already
+available from the casting simulations. During heat
+treatment optimization, the maximum stepwise temperature history is determined without incipient melting.
+The phase-field model applied for heat treatment is a diffuse-interface approach,[81]
+which requires similarly to
+the casting model the interface energy and mobility. The
+software tool MICRESS is applied using thermodynamic and kinetic databases.[68]
+Since processing restrictions sometimes hinder applying maximum
+temperatures, a process window with lowered maximum
+temperatures is computed. The final results of the
+simulation are the concentration fields for all elements
+of the alloy composition after the optimal heat
+treatment.
+A comparison between microprobe measurements of
+commercially purchased single-crystal plates and simulation results of the chromium segregation in CMSX-4
+in the as-cast state and after heat treatment is shown in
+Figure 7. The microprobe measurements (a) are pre-processed to get a numerical representation of the
+chromium concentrations (b). A well accordance
+between the homogenized states in the experimental
+and numerical results after heat treatment is reached, (c)
+and (d), respectively.One approach to approximate TCP-phase susceptibility is the application of equilibrium calculations with
+Thermo-Calc, as mentioned in Section III. The
+TCP-phase precipitation model is based on the Kampmann–Wagner binary system method and was extended
+by Rettig et al.
+[40] for multi-component systems. On every time step, the nucleation rate and precipitation
+growth are evaluated. The nucleation rate depends on
+the free enthalpy of nucleation, which is calculated using
+the CALPHAD method. The precipitation growth
+includes the thermodynamic equilibrium for the chemical potential of precipitate and the matrix interface as
+well as the flux balance for each element. A detailed
+model description as well as simulation results are
+presented in Reference 40 and validated in Reference 18.
+This approach, as well as other existing models to
+predict precipitation on TCP-phases are mainly based
+on simple models, e.g., by using precipitate classes
+without full-field resolution of the concentration
+fields.[89,90] The complex behavior of TCP-phases in
+c=c0 taking into account the microstructural evolution,
+diffusion processes, available nucleation sites, interface
+energies, and the interaction between TCP-phases is an
+ongoing research topic. All these aspects can be combined in phase-field simulations[82,91,92]
+and then applied
+to TCP-phase precipitation in Ni-base superalloys.Due to the high computational effort, it is not possible
+to include the whole TCP-phase precipitation simulation
+chain into the optimization routine for the design of
+complex Ni-base superalloys. Therefore, the main idea is
+the approximation with a surrogate model, which is
+coupled into the optimization procedure within the ‘‘pre-process property models’’ step (Figure 1). This
+approach has two necessary prerequisites. First, each
+simulation tool and subsequently its combination into
+the simulation chain needs to be validated by wellknown reference alloy compositions like CMSX-4.
+Second, a widespread numerical sensitivity analysis on
+the simulation chain on a large design-space needs to be
+executed to develop a regression-based model covering
+the most important findings.
+Our current approach for the development of a
+regression-based model bases on the Johnson–Mehl–Avrami equation[93] for the time-dependent
+transformation of nuclei where fVðt; c; TÞ ¼ f
+eq
+V ðc; TÞ 1  exp kðc; TÞ  t
+nðc;TÞ h i    ; fVðt; c; TÞ is the time-dependent fraction of the
+sum of all TCP-phases and f
+eq
+V ðc; TÞ is the TCP-phase
+amount provided by thermodynamic equilibrium CALPHAD calculations. The Avrami coefficients k and n are
+assumed to be dependent on the concentration c and temperature T and are to be derived. Although, the
+evolution of different types of TCP-phases is much more
+complex with nucleation and growth in parallel as well
+as phase transformation, this approach is well suited to
+model the overall time evolution.[18] The predictive
+power of this surrogate model is defined by the exact
+determination of these parameters, which have to be
+evaluated by the regression analysis. Once all individual
+simulation tools of the simulation chain are completely
+validated, the regression analysis of TCP-phase predictions from the whole simulation chain is the next
+research step.
