@@ -79,14 +79,14 @@ print(lex_summary)
 
 
 
-st.subheader("User Input Text Summarization")
+st.subheader(" summarizer app using lexrank")
 activity1 = ["Summarize"]
 choice = st.sidebar.selectbox("Select Function",activity1)
 if choice == 'Summarize':
 
-    st.subheader("Summary with NLP")
+    st.subheader("lexranksummary")
     raw_text = st.text_area("Enter Text Here")
-    summary_choice = st.selectbox("Summary Choice",["LexRankSummarizer()"])
+   
 st.button("Summarize")
 def sumy_summarizer(input_text):
     parser =PlaintextParser.from_string(input_text,Tokenizer("english"))
