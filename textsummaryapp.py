@@ -92,8 +92,8 @@ if choice == 'Summarize':
 st.button("Summarize")
 def sumy_summarizer(input_text):
     parser =PlaintextParser.from_string(input_text,Tokenizer("english"))
-    luhn_summarizer = LuhnSummarizer()
-    summary = luhn_summarizer(parser.document,3)
+    le_summarizer = Lexranksummarizer()
+    summary = le_summarizer(parser.document,3)
     summary_list = [str(sentence) for sentence in summary]
     result = ' '.join(summary_list)
     return result
