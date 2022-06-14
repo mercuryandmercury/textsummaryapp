@@ -85,7 +85,7 @@ choice = st.sidebar.selectbox("Select Function",activity1)
 if choice == 'Summarize':
 
     st.subheader("lexranksummary")
-    raw_text = st.text_area("Enter Text Here")
+    raw_text = st.text_area("Input text in this area")
    
 st.button("Summarize")
 def sumy_summarizer(input_text):
