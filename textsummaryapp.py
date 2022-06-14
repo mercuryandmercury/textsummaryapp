@@ -88,20 +88,18 @@ if choice == 'Summarize':
 
     st.subheader("Summary with NLP")
     raw_text = st.text_area("Enter Text Here")
-    summary_choice = st.selectbox("Summary Choice",["LuhnSummarizer"])
+    summary_choice = st.selectbox("Summary Choice",["LexRankSummarizer()"])
 st.button("Summarize")
 def sumy_summarizer(input_text):
     parser =PlaintextParser.from_string(input_text,Tokenizer("english"))
-    le_summarizer = Lexranksummarizer()
-    summary = le_summarizer(parser.document,3)
+    lex_summarizer = LexRankSummarizer()
+    summary = lex_summarizer(parser.document,3)
     summary_list = [str(sentence) for sentence in summary]
     result = ' '.join(summary_list)
     return result
 summary_result = sumy_summarizer(raw_text)
 st.write(summary_result)
     
-
-
 
 
 
