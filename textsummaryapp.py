@@ -77,8 +77,6 @@ for sentence in summary:
     lex_summary+=str(sentence)  
 print(lex_summary)
 
-st.subheader('The summary')
-st.write(lex_summary)
 
 
 st.subheader("User Input Text Summarization")
