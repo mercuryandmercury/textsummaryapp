@@ -81,6 +81,25 @@ st.subheader('The summary')
 st.write(lex_summary)
 
 
+st.subheader("User Input Text Summarization")
+activity1 = ["Summarize"]
+choice = st.sidebar.selectbox("Select Function",activity1)
+if choice == 'Summarize':
+
+    st.subheader("Summary with NLP")
+    raw_text = st.text_area("Enter Text Here")
+    summary_choice = st.selectbox("Summary Choice",["LuhnSummarizer"])
+st.button("Summarize")
+def sumy_summarizer(input_text):
+    parser =PlaintextParser.from_string(input_text,Tokenizer("english"))
+    luhn_summarizer = LuhnSummarizer()
+    summary = luhn_summarizer(parser.document,3)
+    summary_list = [str(sentence) for sentence in summary]
+    result = ' '.join(summary_list)
+    return result
+summary_result = sumy_summarizer(raw_text)
+st.write(summary_result)
+    
 
 
 
